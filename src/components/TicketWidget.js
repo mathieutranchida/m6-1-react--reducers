@@ -1,14 +1,12 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Tippy from "@tippy.js/react";
-import "tippy.js/dist/tippy.css";
 
 import { getRowName, getSeatNum } from "../helpers";
 import { range } from "../utils";
 import { SeatContext } from "./SeatContext";
 import { BookingContext } from "./BookingContext";
-import seatImg from "../assets/seat-available.svg";
+import Seat from "./Seat";
 
 const TicketWidget = () => {
   // TODO: use values from Context
@@ -32,42 +30,35 @@ const TicketWidget = () => {
     <Wrapper>
       {range(numOfRows).map((rowIndex) => {
         const rowName = getRowName(rowIndex);
-
         return (
           <Row key={rowIndex}>
             <RowLabel>{rowName}</RowLabel>
+
             {range(seatsPerRow).map((seatIndex) => {
               const seatId = `${rowName}-${getSeatNum(seatIndex)}`;
               const seat = seats[seatId];
+              console.log(rowIndex);
               return (
-                <Tippy
-                  content={`Row ${rowName}, Seat ${seatIndex} - $${seats[seatId].price}`}
+                <SeatWrapper
+                  key={seatId}
+                  disabled={seat.isBooked ? true : false}
+                  onClick={() => {
+                    beginBookingProcess({
+                      price: seat.price,
+                      selectedSeatId: seatId,
+                    });
+                  }}
                 >
-                  <SeatWrapper
-                    key={seatId}
-                    disabled={seat.isBooked ? true : false}
-                  >
-                    <Seat
-                      src={seatImg}
-                      isBooked={seats[seatId].isBooked}
-                      alt={
-                        seat.isBooked ? "unavailable seat" : "available seat"
-                      }
-                      rowIndex={rowIndex}
-                      seatIndex={seatIndex}
-                      width={36}
-                      height={36}
-                      price={seat.price}
-                      status={seat.isBooked ? "unavailable" : "available"}
-                      onClick={() => {
-                        beginBookingProcess({
-                          price: seat.price,
-                          selectedSeatId: seatId,
-                        });
-                      }}
-                    />
-                  </SeatWrapper>
-                </Tippy>
+                  <Seat
+                    rowName={rowName}
+                    seatIndex={seatIndex}
+                    width={36}
+                    height={36}
+                    price={seat.price}
+                    status={seat.isBooked ? "unavailable" : "available"}
+                    isBooked={seat.isBooked}
+                  />
+                </SeatWrapper>
               );
             })}
           </Row>
@@ -118,12 +109,6 @@ const SeatWrapper = styled.button`
   border: none;
   outline: none;
   cursor: pointer;
-`;
-
-const Seat = styled.img`
-  filter: ${({ isBooked }) => {
-    return isBooked ? `grayscale(100%)` : undefined;
-  }};
 `;
 
 export default TicketWidget;
