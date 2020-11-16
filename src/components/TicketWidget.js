@@ -33,11 +33,9 @@ const TicketWidget = () => {
         return (
           <Row key={rowIndex}>
             <RowLabel>{rowName}</RowLabel>
-
             {range(seatsPerRow).map((seatIndex) => {
               const seatId = `${rowName}-${getSeatNum(seatIndex)}`;
               const seat = seats[seatId];
-              console.log(rowIndex);
               return (
                 <SeatWrapper
                   key={seatId}

@@ -14,14 +14,7 @@ const Seat = ({ rowName, seatIndex, price, status, isBooked }) => {
     );
   } else {
     return (
-      <Tippy content={`Row ${rowName}, Seat ${seatIndex} - $${price}`}>
-        <SeatUnitUnavailable
-          src={seatImg}
-          alt={status}
-          width={36}
-          height={36}
-        />
-      </Tippy>
+      <SeatUnitUnavailable src={seatImg} alt={status} width={36} height={36} />
     );
   }
 };
